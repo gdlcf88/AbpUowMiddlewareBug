@@ -21,37 +21,29 @@ public class MyTestAppService : ApplicationService
         _localEventBus = localEventBus;
         _distributedEventBus = distributedEventBus;
     }
-    
+
     public async Task<string> LocalAsync()
     {
         await _localEventBus.PublishAsync(new MyEto());
-        return "success";
+        return "success"; // it returns HTTP 200 with no content if the handler throws
     }
-    
+
     public async Task<string> DistributedAsync()
     {
         await _distributedEventBus.PublishAsync(new MyEto());
-        return "success";
+        return "success"; // it returns HTTP 200 with no content if the handler throws
     }
 }
 
 [Serializable]
-public class MyEto
-{
-}
+public record MyEto;
 
-public class MyLocalEventHandler : ILocalEventHandler<MyEto>, ITransientDependency
+public class MyDistributedEventHandler : ITransientDependency,
+    ILocalEventHandler<MyEto>, IDistributedEventHandler<MyEto>
 {
     public virtual Task HandleEventAsync(MyEto eventData)
     {
-        throw new AbpException("Bye");
-    }
-}
-
-public class MyDistributedEventHandler : IDistributedEventHandler<MyEto>, ITransientDependency
-{
-    public virtual Task HandleEventAsync(MyEto eventData)
-    {
+        Console.WriteLine("Bye");
         throw new AbpException("Bye");
     }
 }
