@@ -201,7 +201,7 @@ public class AbpUowMiddlewareBugHttpApiHostModule : AbpModule
             app.UseMultiTenancy();
         }
 
-        app.UseUnitOfWork();
+        app.UseUnitOfWork(); // remove this line, the bug will be gone
         app.UseAuthorization();
 
         app.UseSwagger();
